@@ -14,7 +14,7 @@ class CreateTableVenueType extends Migration
     public function up()
     {
         Schema::create('tbl_venue_type', function (Blueprint $table) {
-            $table->integer('vty_id');
+            $table->increments('vty_id');
             $table->string('vty_name')->comment('Venue Type Name');
             $table->timestamps();
         });
