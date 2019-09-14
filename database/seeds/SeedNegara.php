@@ -16,7 +16,7 @@ class SeedNegara extends Seeder
         $this->command->warn("tbl_negara TRUNCATED");
         $this->command->info("NEGARA [INDONESIA] ADDED TO tbl_negara");
         $this->command->warn("INSERTING NEGARA");
-        \DB::insert('INSERT INTO tbl_negara (neg_id, neg_name) VALUES (?, ?)', [1, 'Indonesia']);
+        \DB::insert('INSERT INTO tbl_negara (neg_id, neg_name) VALUES (?, ?)', [1, 'INDONESIA']);
         $this->command->warn("NEGARA INSERTED");
     }
 }
