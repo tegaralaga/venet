@@ -20,15 +20,15 @@ class VenueModel extends Model
     use SpatialTrait;
 
     protected $fillable = [
-        'ven_parent_id',
+        'ven_parent',
         'ven_vty_id',
         'ven_location_type',
         'ven_kel_id',
+        'ven_coordinate',
         'ven_capacity',
         'ven_address',
         'ven_name',
         'ven_description',
-        'ven_coordinate',
     ];
     protected $spatialFields = [
         'ven_coordinate',

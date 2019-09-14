@@ -16,7 +16,7 @@ class SeedVenue extends Seeder
         \DB::statement('TRUNCATE tbl_venue_contact;');
         $data = [];
         $item = [
-            'ven_parent_id' => 0,
+            'ven_parent' => 0,
             'ven_vty_id' => 0,
             'ven_location_type' => 'SEMI',
             'ven_kel_id' => 0,
@@ -90,7 +90,7 @@ class SeedVenue extends Seeder
 
     public function processVenue($item, \App\Models\VenueModel $parent = null) {
         if (!($parent == null)) {
-            $item['ven_parent_id'] = $parent->ven_id;
+            $item['ven_parent'] = $parent->ven_id;
             if ($item['ven_kel_id'] == 0) {
                 $item['ven_kel_id'] = $parent->ven_kel_id;
             }
@@ -106,7 +106,7 @@ class SeedVenue extends Seeder
             $kelurahan = \App\Models\KelurahanModel::select('kel_id')->where('kel_id', $item['ven_kel_id'])->count();
             if ($kelurahan == 1) {
                 $venue = new \App\Models\VenueModel();
-                $venue->ven_parent_id = $item['ven_parent_id'];
+                $venue->ven_parent = $item['ven_parent'];
                 $venue->ven_vty_id = $venue_type->vty_id;
                 $venue->ven_location_type = $item['ven_location_type'];
                 $venue->ven_kel_id = $item['ven_kel_id'];
