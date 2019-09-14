@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Grimzy\LaravelMysqlSpatial\Types\Point;
 
 class SeedVenue extends Seeder
 {
@@ -22,6 +23,7 @@ class SeedVenue extends Seeder
             'ven_capacity' => 0,
             'ven_address' => null,
             'ven_name' => null,
+            'ven_coordinate' => null,
             'ven_description' => null,
             'contacts' => [],
             'children' => [],
@@ -31,6 +33,7 @@ class SeedVenue extends Seeder
         $mason_pine['ven_kel_id'] = 5576;
         $mason_pine['ven_address'] = 'Jalan Raya Parahyangan KM. 1.8 Kota Baru Parahyangan, Bandung 40714, Indonesia';
         $mason_pine['ven_name'] = 'Mason Pine Hotel';
+        $mason_pine['ven_coordinate'] = new Point(-6.8639698, 107.4799517);
         $mason_pine_phone_number = new \App\Helpers\VenueContact\VCPhoneNumber();
         $mason_pine_phone_number->setValue('(+62 22) 680 3778');
         $mason_pine_mobile_number = new \App\Helpers\VenueContact\VCMobileNumber();
@@ -62,18 +65,15 @@ class SeedVenue extends Seeder
         $bale_bale_lounge = $item;
         $bale_bale_lounge['ven_vty_id'] = 'Restoran';
         $bale_bale_lounge['ven_name'] = 'Bale Bale Lounge';
-        $bale_bale_lounge['contacts'][] = $mason_pine_phone_number;
         $chips_water_world = $item;
         $chips_water_world['ven_vty_id'] = 'Kolam Renang Anak';
         $chips_water_world['ven_name'] = "Chip's Water World";
         $chips_water_world['ven_location_type'] = "OUTDOOR";
         $chips_water_world['ven_description'] = "Kolam Renang Anak";
-        $chips_water_world['contacts'][] = $mason_pine_phone_number;
         $chups_play_club = $item;
         $chups_play_club['ven_vty_id'] = 'Tempat Bermain';
         $chups_play_club['ven_name'] = "Chup's Play Club";
         $chups_play_club['ven_location_type'] = "INDOOR";
-        $chups_play_club['contacts'][] = $mason_pine_phone_number;
         $mason_pine['children'][] = $bale_bale_lounge;
         $mason_pine['children'][] = $chips_water_world;
         $mason_pine['children'][] = $chups_play_club;
@@ -97,6 +97,9 @@ class SeedVenue extends Seeder
             if ($item['ven_address'] == null) {
                 $item['ven_address'] = $parent->ven_address;
             }
+            if ($item['ven_coordinate'] == null) {
+                $item['ven_coordinate'] = $parent->ven_coordinate;
+            }
         }
         $venue_type = \App\Models\VenueTypeModel::select('vty_id')->where('vty_name', $item['ven_vty_id'])->first();
         if (!($venue_type == null)) {
@@ -111,6 +114,7 @@ class SeedVenue extends Seeder
                 $venue->ven_address = $item['ven_address'];
                 $venue->ven_name = $item['ven_name'];
                 $venue->ven_description = $item['ven_description'];
+                $venue->ven_coordinate = $item['ven_coordinate'];
                 if ($venue->save()) {
                     foreach ($item['children'] as $children) {
                         $this->processVenue($children, $venue);
@@ -121,10 +125,12 @@ class SeedVenue extends Seeder
         }
     }
 
-    public function processVenueContact($venue_contacts, \App\Models\VenueModel $parent) {
+    public function processVenueContact($venue_contacts, \App\Models\VenueModel $parent = null) {
         foreach ($venue_contacts as $contact) {
             $contact->setVenue($parent->ven_id);
-            $contact->save();
+            if(!$contact->save()) {
+                $this->command->error('FAILED SAVING');
+            }
         }
     }
 }
