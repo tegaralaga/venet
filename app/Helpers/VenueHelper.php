@@ -72,7 +72,7 @@ class VenueHelper
      * @param bool $refresh
      * @return array|mixed|object
      */
-    public static function GetVenueData(int $id, $object = false, $refresh = false) {
+    public static function GetVenueData(int $id, $object = false, $refresh = false, $with_parent = false) {
         $result = [];
         $redis_key = 'venue:' . $id;
         $cache = RH::Get($redis_key);
@@ -84,7 +84,7 @@ class VenueHelper
                 ->join('tbl_venue_type', 'tbl_venue.ven_vty_id', '=', 'tbl_venue_type.vty_id')
                 ->find($id);
             if (!($select == null)) {
-                $parent = ($select->ven_parent == 0) ? null : self::GetVenueData($select->ven_parent, $object, $refresh);
+                $parent = ($select->ven_parent == 0) ? null : (($with_parent) ? self::GetVenueData($select->ven_parent, $object, $refresh, $with_parent) : ['id' => $select->ven_parent]);
                 $contacts = self::GetVenueContact($select->ven_id, $object, $refresh);
                 $result = [
                     'id' => (int)$select->ven_id,
@@ -104,23 +104,28 @@ class VenueHelper
                     'contacts' => $contacts,
                     'parent' => $parent,
                 ];
+                $save_to_redis = $result;
+                if (!($parent == null)) {
+                    unset($save_to_redis['parent']);
+                    $save_to_redis['parent'] = ['id' => $result['parent']['id']];
+                }
+                $save_to_redis['location']['area'] = $select->ven_kel_id;
+                $save_to_redis['contacts'] = [];
+                RH::Set($redis_key, json_encode($save_to_redis), RH::WEEK);
+            } else {
+                $result = null;
             }
-            $save_to_redis = $result;
-            if (!($parent == null)) {
-                unset($save_to_redis['parent']);
-                $save_to_redis['parent'] = ['id' => $result['parent']['id']];
-            }
-            $save_to_redis['location']['area'] = $select->ven_kel_id;
-            $save_to_redis['contacts'] = [];
-            RH::Set($redis_key, json_encode($save_to_redis), RH::WEEK);
         } else {
             $cache = json_decode($cache, true);
             if (!(count($cache) == 0)) {
                 $result = $cache;
                 $result['location']['area'] = self::GetAreaByKelurahan($result['location']['area'], $object, $refresh);
-                $result['parent'] = ($result['parent'] == null) ? null : self::GetVenueData($result['parent']['id'], $object, $refresh);
+                $result['parent'] = ($result['parent'] == null) ? null : (($with_parent) ? self::GetVenueData($result['parent']['id'], $object, $refresh, $with_parent) : ['id' => $result['parent']['id']]);
                 $result['contacts'] = self::GetVenueContact($result['id'], $object, $refresh);
             }
+        }
+        if (!($with_parent)) {
+            $result['parent'] = null;
         }
         return (($object) ? (object)$result : $result);
     }
