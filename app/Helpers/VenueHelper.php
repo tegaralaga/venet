@@ -108,7 +108,6 @@ class VenueHelper
             $save_to_redis = $result;
             if (!($parent == null)) {
                 unset($save_to_redis['parent']);
-                unset($save_to_redis['location']['area']);
                 $save_to_redis['parent'] = ['id' => $result['parent']['id']];
             }
             $save_to_redis['location']['area'] = $select->ven_kel_id;
