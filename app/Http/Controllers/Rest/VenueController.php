@@ -15,6 +15,7 @@ use App\Models\VenueTypeModel;
 use App\Traits\VenetTrait;
 use Grimzy\LaravelMysqlSpatial\Types\Point;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
 use App\Helpers\RedisHelper as RH;
 use Illuminate\Validation\Rule;
@@ -29,8 +30,26 @@ class VenueController extends Controller
     }
 
     public function index(Request $request, $id) {
-        $this->success = true;
-        $this->data = VH::GetVenueData($id);
+        $venue = null;
+        $parent = $request->parent;
+        if (blank($parent)) {
+            $parent = false;
+        } else {
+            $parent = strtolower($parent);
+            if ($parent == 'true'){
+                $parent = true;
+            } else {
+                $parent = false;
+            }
+        }
+        $venue = VH::GetVenueData($id, false, false, $parent);
+        if ($venue == null) {
+            $this->code = Response::HTTP_NOT_FOUND;
+            $this->message = 'Not Found';
+        } else {
+            $this->success = true;
+            $this->data = $venue;
+        }
         return $this->json();
     }
 
@@ -68,7 +87,7 @@ class VenueController extends Controller
         if ($validator->fails()) {
             $this->message = $validator->errors();
         } else {
-            $parent_id = (strlen(trim($request->parent)) == 0) ? 0 : $request->parent;
+            $parent_id = (blank($request->parent) ? 0 : $request->parent);
             $rules = [];
             $kelurahan = $request->kelurahan;
             $latitude = $request->latitude;
@@ -92,22 +111,22 @@ class VenueController extends Controller
                     'address' => 'required|max:200',
                 ];
             } else {
-                if (!((strlen(trim($kelurahan)) == 0))) {
+                if (filled($kelurahan)) {
                     $rules['kelurahan'] = 'required|exists:tbl_kelurahan,kel_id';
                 } else {
                     $kelurahan = null;
                 }
-                if (!((strlen(trim($latitude)) == 0))) {
+                if (filled($latitude)) {
                     $rules['latitude'] = 'required|numeric|between:-90,90';
                 } else {
                     $latitude = null;
                 }
-                if (!((strlen(trim($longitude)) == 0))) {
+                if (filled($longitude)) {
                     $rules['longitude'] = 'required|numeric|between:-180,180';
                 } else {
                     $longitude = null;
                 }
-                if (!((strlen(trim($address)) == 0))) {
+                if (filled($address)) {
                     $rules['address'] = 'required|max:200';
                 } else {
                     $address = null;
@@ -148,15 +167,15 @@ class VenueController extends Controller
                     $venue->ven_location_type = $request->location_type;
                     $venue->ven_kel_id = $kelurahan;
                     $venue->ven_coordinate = new Point($latitude, $longitude);
-                    $venue->ven_capacity = (((strlen(trim($request->capacity)) == 0)) ? 0 : $request->capacity);
+                    $venue->ven_capacity = (blank($request->capacity) ? 0 : $request->capacity);
                     $venue->ven_address = $address;
                     $venue->ven_name = $request->name;
-                    $venue->ven_description = (((strlen(trim($request->description)) == 0)) ? null : $request->description);
+                    $venue->ven_description = (blank($request->description) ? null : $request->description);
                     $venue->save();
                     \DB::commit();
                     $this->success = true;
-                    // display saved venue, along with its parent if exists
-                    $this->data = VH::GetVenueData($venue->ven_id);
+                    // display saved venue
+                    $this->data = VH::GetVenueData($venue->ven_id, false, false, false);
                 } catch (\Exception $e) {
                     \DB::rollBack();
                     $this->success = false;
