@@ -8,8 +8,15 @@
 
 namespace App\Helpers;
 
+/**
+ * Class TimeHelper
+ * @package App\Helpers
+ */
 class TimeHelper
 {
+    /**
+     * @return float
+     */
     public static function server_elapsed_time()
     {
         $elapsed = microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'];

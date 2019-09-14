@@ -13,9 +13,19 @@ use App\Helpers\RedisHelper as RH;
 use App\Models\VenueContactModel;
 use App\Models\VenueModel;
 
+/**
+ * Class VenueHelper
+ * @package App\Helpers
+ */
 class VenueHelper
 {
-    public static function GetAreaByKelurahan($kelurahan, $object = false, $refresh = false)
+    /**
+     * @param int $kelurahan
+     * @param bool $object
+     * @param bool $refresh
+     * @return array|mixed|object
+     */
+    public static function GetAreaByKelurahan(int $kelurahan, $object = false, $refresh = false)
     {
         $result = [
             'kelurahan' => null,
@@ -56,7 +66,13 @@ class VenueHelper
         return (($object) ? (object)$result : $result);
     }
 
-    public static function GetVenueData($id, $object = false, $refresh = false) {
+    /**
+     * @param int $id
+     * @param bool $object
+     * @param bool $refresh
+     * @return array|mixed|object
+     */
+    public static function GetVenueData(int $id, $object = false, $refresh = false) {
         $result = [];
         $redis_key = 'venue:' . $id;
         $cache = RH::Get($redis_key);
@@ -110,7 +126,13 @@ class VenueHelper
         return (($object) ? (object)$result : $result);
     }
 
-    public static function GetVenueContact($id, $object = false, $refresh = false) {
+    /**
+     * @param int $id
+     * @param bool $object
+     * @param bool $refresh
+     * @return array|mixed|object
+     */
+    public static function GetVenueContact(int $id, $object = false, $refresh = false) {
         $result = [];
         $redis_key = 'venue:contact:' . $id;
         $cache = RH::Get($redis_key);

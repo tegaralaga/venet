@@ -11,6 +11,10 @@ namespace App\Helpers;
 
 use Illuminate\Support\Facades\Redis;
 
+/**
+ * Class RedisHelper
+ * @package App\Helpers
+ */
 class RedisHelper
 {
     const REDIS_PREFIX = 'venet:';
@@ -20,6 +24,10 @@ class RedisHelper
     const WEEK = self::DAY * 7;
     const MONTH = self::DAY * 30;
 
+    /**
+     * @param $key
+     * @return mixed
+     */
     public static function Get($key)
     {
         self::setKey($key);
@@ -27,6 +35,11 @@ class RedisHelper
         return $value;
     }
 
+    /**
+     * @param $key
+     * @param $value
+     * @param int $ttl
+     */
     public static function Set($key, $value, $ttl = 0)
     {
         self::setKey($key);
