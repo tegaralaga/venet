@@ -6,7 +6,7 @@
  * Time: 16:42
  */
 
-namespace App\Helpers\VenueContact;
+namespace App\Helpers\Contact;
 
 abstract class VenueContact {
     private $venue = 0;

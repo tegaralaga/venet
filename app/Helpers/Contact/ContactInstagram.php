@@ -3,15 +3,15 @@
  * Created by PhpStorm.
  * User: tegaralaga
  * Date: 2019-09-13
- * Time: 17:01
+ * Time: 16:57
  */
 
-namespace App\Helpers\VenueContact;
+namespace App\Helpers\Contact;
 
-class VCEmail extends VenueContact
+class VCInstagram extends VenueContact
 {
     public function __construct()
     {
-        $this->setType('EMAIL');
+        $this->setType('INSTAGRAM');
     }
 }

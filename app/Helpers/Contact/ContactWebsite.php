@@ -6,7 +6,7 @@
  * Time: 16:58
  */
 
-namespace App\Helpers\VenueContact;
+namespace App\Helpers\Contact;
 
 class VCWebsite extends VenueContact
 {

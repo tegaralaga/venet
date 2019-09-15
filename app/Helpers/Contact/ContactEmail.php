@@ -3,15 +3,15 @@
  * Created by PhpStorm.
  * User: tegaralaga
  * Date: 2019-09-13
- * Time: 16:55
+ * Time: 17:01
  */
 
-namespace App\Helpers\VenueContact;
+namespace App\Helpers\Contact;
 
-class VCFaxNumber extends VenueContact
+class VCEmail extends VenueContact
 {
     public function __construct()
     {
-        $this->setType("FAX_NUMBER");
+        $this->setType('EMAIL');
     }
 }

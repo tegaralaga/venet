@@ -6,7 +6,7 @@
  * Time: 16:54
  */
 
-namespace App\Helpers\VenueContact;
+namespace App\Helpers\Contact;
 
 class VCMobileNumber extends VenueContact
 {

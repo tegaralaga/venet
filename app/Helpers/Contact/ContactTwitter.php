@@ -6,7 +6,7 @@
  * Time: 16:55
  */
 
-namespace App\Helpers\VenueContact;
+namespace App\Helpers\Contact;
 
 class VCTwitter extends VenueContact
 {
