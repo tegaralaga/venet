@@ -19,5 +19,4 @@ class KelurahanModel extends Model
     ];
     protected $primaryKey = 'kel_id';
     protected $table = 'tbl_kelurahan';
-
 }
