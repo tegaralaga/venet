@@ -80,6 +80,7 @@ $app->singleton(
 // $app->register(App\Providers\AuthServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
 $app->register(Illuminate\Redis\RedisServiceProvider::class);
+$app->register(LaravelHashids\Providers\LumenServiceProvider::class);
 
 /*
 |--------------------------------------------------------------------------
