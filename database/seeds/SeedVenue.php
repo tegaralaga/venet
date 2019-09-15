@@ -14,7 +14,6 @@ class SeedVenue extends Seeder
     {
         \DB::statement('TRUNCATE tbl_venue;');
         \DB::statement('TRUNCATE tbl_venue_contact;');
-        $data = [];
         $item = [
             'ven_parent' => 0,
             'ven_vty_id' => 0,
@@ -34,24 +33,24 @@ class SeedVenue extends Seeder
         $mason_pine['ven_address'] = 'Jalan Raya Parahyangan KM. 1.8 Kota Baru Parahyangan, Bandung 40714, Indonesia';
         $mason_pine['ven_name'] = 'Mason Pine Hotel';
         $mason_pine['ven_coordinate'] = new Point(-6.8639698, 107.4799517);
-        $mason_pine_phone_number = new \App\Helpers\VenueContact\VCPhoneNumber();
+        $mason_pine_phone_number = new \App\Helpers\Contact\ContactPhoneNumber();
         $mason_pine_phone_number->setValue('(+62 22) 680 3778');
-        $mason_pine_mobile_number = new \App\Helpers\VenueContact\VCMobileNumber();
+        $mason_pine_mobile_number = new \App\Helpers\Contact\ContactMobileNumber();
         $mason_pine_mobile_number->setValue('(+62) 852 2229 2229');
         $mason_pine_mobile_number->setDescription('Available for WhatsApp and Telegram');
-        $mason_pine_fax_number = new \App\Helpers\VenueContact\VCFaxNumber();
+        $mason_pine_fax_number = new \App\Helpers\Contact\ContactFaxNumber();
         $mason_pine_fax_number->setValue('(+62 22) 680 3779');
-        $mason_pine_email = new \App\Helpers\VenueContact\VCEmail();
+        $mason_pine_email = new \App\Helpers\Contact\ContactEmail();
         $mason_pine_email->setValue('reservation@masonpinehotel.com');
-        $mason_pine_twitter = new \App\Helpers\VenueContact\VCTwitter();
+        $mason_pine_twitter = new \App\Helpers\Contact\ContactTwitter();
         $mason_pine_twitter->setValue('@masonpine');
-        $mason_pine_facebook = new \App\Helpers\VenueContact\VCFacebook();
+        $mason_pine_facebook = new \App\Helpers\Contact\ContactFacebook();
         $mason_pine_facebook->setValue('https://www.facebook.com/pages/Mason-Pine-Hotel/82213385138');
-        $mason_pine_instagram = new \App\Helpers\VenueContact\VCInstagram();
+        $mason_pine_instagram = new \App\Helpers\Contact\ContactInstagram();
         $mason_pine_instagram->setValue('@masonpinehotel');
-        $mason_pine_website = new \App\Helpers\VenueContact\VCWebsite();
+        $mason_pine_website = new \App\Helpers\Contact\ContactWebsite();
         $mason_pine_website->setValue('http://masonpinehotel.com/');
-        $mason_pine_tripadvisor = new \App\Helpers\VenueContact\VCWebsite();
+        $mason_pine_tripadvisor = new \App\Helpers\Contact\ContactWebsite();
         $mason_pine_tripadvisor->setValue('http://www.tripadvisor.co.id/Hotel_Review-g297704-d1389881-Reviews-Mason_Pine_Hotel-Bandung_West_Java_Java.html');
         $mason_pine_tripadvisor->setDescription('Trip Advisor');
         $mason_pine['contacts'][] = $mason_pine_phone_number;
@@ -127,7 +126,7 @@ class SeedVenue extends Seeder
 
     public function processVenueContact($venue_contacts, \App\Models\VenueModel $parent = null) {
         foreach ($venue_contacts as $contact) {
-            $contact->setVenue($parent->ven_id);
+            $contact->setParent($parent->ven_id);
             if(!$contact->save()) {
                 $this->command->error('FAILED SAVING');
             }
