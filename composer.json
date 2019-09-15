@@ -10,7 +10,10 @@
         "grimzy/laravel-mysql-spatial": "^2.2",
         "illuminate/redis": "5.8.*",
         "laravel/lumen-framework": "5.8.*",
-        "predis/predis": "^1.1"
+        "nblackburn/laravel-hashids": "^1.2",
+        "predis/predis": "^1.1",
+        "yajra/laravel-datatables-buttons": "^4.8",
+        "yajra/laravel-datatables-oracle": "^9.6"
     },
     "require-dev": {
         "fzaninotto/faker": "^1.4",
