@@ -9,6 +9,7 @@ namespace App\Traits;
 
 use App\Helpers\TimeHelper;
 use Carbon\Carbon;
+use LaravelHashids\Facades\Hashids;
 
 trait VenetTrait
 {
@@ -42,7 +43,7 @@ trait VenetTrait
         return response()->json($result, $this->code, [], JSON_PRETTY_PRINT);
     }
 
-    public function ReloadDatetime()
+    public function reload_date_time()
     {
         $this->carbon = Carbon::now('Asia/Jakarta');
         $this->carbon_utc = Carbon::now('UTC');
@@ -54,6 +55,17 @@ trait VenetTrait
         $this->date_utc = $this->carbon_utc->format('Y-m-d');
         $this->time = $this->carbon->format('H:i:s');
         $this->time_utc = $this->carbon_utc->format('H:i:s');
+    }
+
+    public function encode($value) {
+        return Hashids::encode($value);
+    }
+
+    public function decode($value) {
+        $decoded = Hashids::decode($value);
+        if (count($decoded) == 0)
+            return 0;
+        return $decoded[0];
     }
 
 }
