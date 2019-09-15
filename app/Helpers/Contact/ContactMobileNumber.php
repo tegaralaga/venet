@@ -8,10 +8,13 @@
 
 namespace App\Helpers\Contact;
 
-class VCMobileNumber extends VenueContact
+class ContactMobileNumber extends Contact
 {
-    public function __construct()
+    public function __construct($value = null, $model = 'venue', $description = null)
     {
+        $this->setValue($value);
+        $this->setModel($model);
+        $this->setDescription($description);
         $this->setType('MOBILE_NUMBER');
     }
 }

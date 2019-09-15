@@ -8,10 +8,13 @@
 
 namespace App\Helpers\Contact;
 
-class VCTwitter extends VenueContact
+class ContactTwitter extends Contact
 {
-    public function __construct()
+    public function __construct($value = null, $model = 'venue', $description = null)
     {
+        $this->setValue($value);
+        $this->setModel($model);
+        $this->setDescription($description);
         $this->setType('TWITTER');
     }
 }

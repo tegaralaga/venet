@@ -8,15 +8,21 @@
 
 namespace App\Helpers\Contact;
 
-abstract class VenueContact {
-    private $venue = 0;
+use App\Models\CustomerContactModel;
+use App\Models\EventContactModel;
+use App\Models\LineUpContactModel;
+use App\Models\OrganizerContactModel;
+
+abstract class Contact {
+    private $parent = 0;
     private $type = "PHONE_NUMBER";
     private $value = null;
     private $description = null;
-    private $venue_contact = null;
+    private $contact = null;
+    private $model = 'venue';
 
-    public function setVenue($venue) {
-        $this->venue = $venue;
+    public function setParent($venue) {
+        $this->parent = $venue;
     }
 
     public function setType($type) {
@@ -31,20 +37,69 @@ abstract class VenueContact {
         $this->description = $description;
     }
 
-    public function getVenueContact() {
-        if ($this->venue_contact == null) {
-            $this->venue_contact = new \App\Models\VenueContactModel();
+    public function setModel($model = 'venue') {
+        $this->model = $model;
+    }
+
+    public function GetContact() {
+        switch ($this->model) {
+            case 'venue':
+                if ($this->contact == null) {
+                    $this->contact = new \App\Models\VenueContactModel([
+                        'vco_ven_id' => $this->parent,
+                        'vco_type' => $this->type,
+                        'vco_value' => $this->value,
+                        'vco_description' => $this->description,
+                    ]);
+                }
+                break;
+            case 'line_up':
+                if ($this->contact == null) {
+                    $this->contact = new LineUpContactModel([
+                        'lco_lin_id' => $this->parent,
+                        'lco_type' => $this->type,
+                        'lco_value' => $this->value,
+                        'lco_description' => $this->description,
+                    ]);
+                }
+                break;
+            case 'organizer':
+                if ($this->contact == null) {
+                    $this->contact = new OrganizerContactModel([
+                        'oco_org_id' => $this->parent,
+                        'oco_type' => $this->type,
+                        'oco_value' => $this->value,
+                        'oco_description' => $this->description,
+                    ]);
+                }
+                break;
+            case 'event':
+                if ($this->contact == null) {
+                    $this->contact = new EventContactModel([
+                        'eco_org_id' => $this->parent,
+                        'eco_type' => $this->type,
+                        'eco_value' => $this->value,
+                        'eco_description' => $this->description,
+                    ]);
+                }
+                break;
+            case 'customer':
+                if ($this->contact == null) {
+                    $this->contact = new CustomerContactModel([
+                        'cco_cus_id' => $this->parent,
+                        'cco_type' => $this->type,
+                        'cco_value' => $this->value,
+                        'cco_description' => $this->description,
+                    ]);
+                }
+                break;
         }
-        $this->venue_contact->vco_ven_id = $this->venue;
-        $this->venue_contact->vco_type = $this->type;
-        $this->venue_contact->vco_value = $this->value;
-        $this->venue_contact->vco_description = $this->description;
-        return $this->venue_contact;
+        return $this->contact;
     }
 
     public function save() {
-        $this->getVenueContact();
-        return $this->venue_contact->save();
+        $this->GetContact();
+        return $this->contact->save();
     }
 
 }

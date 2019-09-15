@@ -18,7 +18,8 @@ use Illuminate\Support\Facades\Redis;
 class RedisHelper
 {
     const REDIS_PREFIX = 'venet:';
-    const MINUTE = 60;
+    const SECOND = 1;
+    const MINUTE = self::SECOND * 60;
     const HOUR = self::MINUTE * 60;
     const DAY = self::HOUR * 24;
     const WEEK = self::DAY * 7;
@@ -47,6 +48,62 @@ class RedisHelper
         if ($ttl > 0) {
             Redis::command('EXPIRE', [$key, $ttl]);
         }
+    }
+
+    public static function TTL($key)
+    {
+        self::setKey($key);
+        $ttl = Redis::command('TTL', [$key]);
+        if ($ttl < 1) {
+            $ttl = 0;
+        }
+        return $ttl;
+    }
+
+    public static function IncreaseTicket($key, $value) {
+        self::setKey($key);
+        $quote = Redis::get($key);
+        if ($quote == null) {
+            $quote = 0;
+        }
+        $quote = $quote + $value;
+        $ttl = Redis::command('TTL', [$key]);
+        if ($ttl < 1) {
+            $ttl = self::WEEK;
+        }
+        Redis::set($key, $quote);
+        Redis::command('EXPIRE', [$key, $ttl]);
+        return true;
+    }
+
+    public static function DecreaseTicket($key, $value) {
+        self::setKey($key);
+        $quote = Redis::get($key);
+        if (!($quote == null)) {
+            if ($quote >= $value) {
+                $quote = $quote - $value;
+                $ttl = Redis::command('TTL', [$key]);
+                if ($ttl < 1) {
+                    $ttl = self::WEEK;
+                }
+                Redis::set($key, $quote);
+                Redis::command('EXPIRE', [$key, $ttl]);
+                return true;
+            } else {
+                return false;
+            }
+        }
+        return false;
+    }
+
+    public static function Incr($key) {
+        self::setKey($key);
+        Redis::command('INCR', [$key]);
+    }
+
+    public static function Decr($key) {
+        self::setKey($key);
+        Redis::command('DECR', [$key]);
     }
 
     public static function setKey(&$key) {
