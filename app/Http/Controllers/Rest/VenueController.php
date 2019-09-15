@@ -9,7 +9,6 @@
 namespace App\Http\Controllers\Rest;
 
 use App\Http\Controllers\Controller;
-use App\Models\KelurahanModel;
 use App\Models\VenueModel;
 use App\Models\VenueTypeModel;
 use App\Traits\VenetTrait;
@@ -29,7 +28,7 @@ class VenueController extends Controller
     {
     }
 
-    public function index(Request $request, $id) {
+    public function venue_info(Request $request, $id) {
         $venue = null;
         $parent = $request->parent;
         if (blank($parent)) {
